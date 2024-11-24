@@ -84,7 +84,8 @@ module liquid_staking::liquid_staking {
         typename: TypeName,
         lst_amount_in: u64,
         sui_amount_out: u64,
-        fee_amount: u64
+        fee_amount: u64,
+        fee_distributed: u64
     }
 
     
@@ -349,14 +350,23 @@ module liquid_staking::liquid_staking {
         let mut sui = self.storage.split_n_sui(system_state, sui_amount_out, ctx);
 
         // deduct fee
-        let redeem_fee_amount = self.fee_config.get().calculate_redeem_fee(sui.value());
-        self.fees.join(sui.split(redeem_fee_amount as u64));
+        let mut redeem_fee_amount = self.fee_config.get().calculate_redeem_fee(sui.value());
+        let distribution_fee = self.fee_config.get().calculate_distribution_component_fee(redeem_fee_amount);
+        redeem_fee_amount = if(redeem_fee_amount > distribution_fee) {
+                    redeem_fee_amount - distribution_fee
+                    } else {
+                        0
+                    };
+
+            self.fees.join(sui.split(redeem_fee_amount as u64));
+            self.storage.join_to_sui_pool(sui.split(distribution_fee as u64));
 
         emit_event(RedeemEvent {
             typename: type_name::get<P>(),
             lst_amount_in: lst.value(),
             sui_amount_out: sui.value(),
-            fee_amount: redeem_fee_amount
+            fee_amount: redeem_fee_amount,
+            fee_distributed: distribution_fee
         });
 
         // invariant: sui_out / lst_in <= old_sui_supply / old_lst_supply
