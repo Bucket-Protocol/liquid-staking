@@ -16,6 +16,7 @@ module liquid_staking::fees {
         spread_fee_bps: u64,
         flash_stake_fee_bps: u64,
         custom_redeem_fee_bps: u64, // unused
+        redeem_fee_distribution_component_bps: u64,
         extra_fields: Bag // in case we add other fees later
     }
 
@@ -45,6 +46,10 @@ module liquid_staking::fees {
 
     public fun flash_stake_fee_bps(fees: &FeeConfig): u64 {
         fees.flash_stake_fee_bps
+    }
+
+    public fun redeem_fee_distribution_component_bps(fees: &FeeConfig): u64 {
+        fees.redeem_fee_distribution_component_bps
     }
 
     public fun custom_redeem_fee_bps(fees: &FeeConfig): u64 {
@@ -82,6 +87,11 @@ module liquid_staking::fees {
 
     public fun set_custom_redeem_fee_bps(mut self: FeeConfigBuilder, fee: u64): FeeConfigBuilder {
         bag::add(&mut self.fields, b"custom_redeem_fee_bps", fee);
+        self
+    }
+
+    public fun set_redeem_fee_distribution_component_bps(mut self: FeeConfigBuilder, fee: u64): FeeConfigBuilder {
+        bag::add(&mut self.fields, b"redeem_fee_distribution_component_bps", fee);
         self
     }
 
@@ -124,6 +134,11 @@ module liquid_staking::fees {
             } else {
                 0
             },
+            redeem_fee_distribution_component_bps: if (bag::contains(&fields, b"redeem_fee_distribution_component_bps")) {
+                bag::remove(&mut fields, b"redeem_fee_distribution_component_bps")
+            } else {
+                0
+            },
             custom_redeem_fee_bps: if (bag::contains(&fields, b"custom_redeem_fee_bps")) {
                 bag::remove(&mut fields, b"custom_redeem_fee_bps")
             } else {
@@ -152,6 +167,7 @@ module liquid_staking::fees {
         assert!(fees.staked_sui_redeem_fee_bps <= MAX_BPS, EInvalidFeeConfig);
         assert!(fees.spread_fee_bps <= MAX_BPS, EInvalidFeeConfig);
         assert!(fees.flash_stake_fee_bps <= MAX_BPS, EInvalidFeeConfig);
+        assert!(fees.redeem_fee_distribution_component_bps <= MAX_BPS, EInvalidFeeConfig);
         assert!(fees.custom_redeem_fee_bps <= MAX_BPS, EInvalidFeeConfig);
     }
 
@@ -171,6 +187,15 @@ module liquid_staking::fees {
 
         // ceil(sui_amount * redeem_fee_bps / 10_000)
         (((sui_amount as u128) * (self.redeem_fee_bps as u128) + 9999) / 10_000) as u64
+    }
+
+    public(package) fun calculate_distribution_component_fee(self: &FeeConfig, redeem_fee: u64): u64 {
+        if (self.redeem_fee_distribution_component_bps == 0) {
+            return 0
+        };
+
+        // ceil(redeem_amount * redeem_fee_bps / 10_000)
+        (((redeem_fee as u128) * (self.redeem_fee_distribution_component_bps as u128) + 9999) / 10_000) as u64
     }
 
     public(package) fun calculate_flash_stake_fee(self: &FeeConfig, sui_amount: u64): u64 {
@@ -194,6 +219,7 @@ module liquid_staking::fees {
             staked_sui_redeem_fee_bps: 10_000,
             spread_fee_bps: 10_000,
             flash_stake_fee_bps:10_000,
+            redeem_fee_distribution_component: 10_000,
             custom_redeem_fee_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
@@ -215,6 +241,7 @@ module liquid_staking::fees {
             staked_sui_redeem_fee_bps: 10_000,
             spread_fee_bps: 10_000,
             flash_stake_fee_bps:10_000,
+            redeem_fee_distribution_component: 10_000,
             custom_redeem_fee_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
@@ -236,6 +263,7 @@ module liquid_staking::fees {
             spread_fee_bps: 10_000,
             custom_redeem_fee_bps: 10_000,
             flash_stake_fee_bps:10_000,
+            redeem_fee_distribution_component: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
 
@@ -258,6 +286,7 @@ module liquid_staking::fees {
             staked_sui_redeem_fee_bps: 10_000,
             spread_fee_bps: 10_000,
             flash_stake_fee_bps: 10_000,
+            redeem_fee_distribution_component: 10_000,
             custom_redeem_fee_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
