@@ -351,7 +351,12 @@ module liquid_staking::liquid_staking {
 
         // deduct fee
         let mut redeem_fee_amount = self.fee_config.get().calculate_redeem_fee(sui.value());
-        let distribution_fee = self.fee_config.get().calculate_distribution_component_fee(redeem_fee_amount);
+        let distribution_fee = 
+            if(self.total_lst_supply<P>() == lst.value()) {
+                0
+            } else {
+                self.fee_config.get().calculate_distribution_component_fee(redeem_fee_amount)
+            };
         redeem_fee_amount = if(redeem_fee_amount > distribution_fee) {
                     redeem_fee_amount - distribution_fee
                     } else {
