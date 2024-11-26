@@ -219,7 +219,7 @@ module liquid_staking::fees {
             staked_sui_redeem_fee_bps: 10_000,
             spread_fee_bps: 10_000,
             flash_stake_fee_bps:10_000,
-            redeem_fee_distribution_component: 10_000,
+            redeem_fee_distribution_component_bps: 10_000,
             custom_redeem_fee_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
@@ -241,7 +241,7 @@ module liquid_staking::fees {
             staked_sui_redeem_fee_bps: 10_000,
             spread_fee_bps: 10_000,
             flash_stake_fee_bps:10_000,
-            redeem_fee_distribution_component: 10_000,
+            redeem_fee_distribution_component_bps: 10_000,
             custom_redeem_fee_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
@@ -263,7 +263,7 @@ module liquid_staking::fees {
             spread_fee_bps: 10_000,
             custom_redeem_fee_bps: 10_000,
             flash_stake_fee_bps:10_000,
-            redeem_fee_distribution_component: 10_000,
+            redeem_fee_distribution_component_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
 
@@ -286,7 +286,7 @@ module liquid_staking::fees {
             staked_sui_redeem_fee_bps: 10_000,
             spread_fee_bps: 10_000,
             flash_stake_fee_bps: 10_000,
-            redeem_fee_distribution_component: 10_000,
+            redeem_fee_distribution_component_bps: 10_000,
             custom_redeem_fee_bps: 10_000,
             extra_fields: bag::new(scenario.ctx())
         };
