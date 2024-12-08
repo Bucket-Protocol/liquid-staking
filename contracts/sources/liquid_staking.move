@@ -185,6 +185,8 @@ module liquid_staking::liquid_staking {
             liquid_staking_info_id: uid.to_inner()
         });
 
+        fee_config.emit_fee_change_event<P>();
+
         let collect_fee_cap = CollectionFeeCap<P> {
                 id: object::new(ctx)
         };
@@ -229,7 +231,7 @@ module liquid_staking::liquid_staking {
 
         self.refresh_no_entry<P>(system_state, ctx);
         // deduct fees
-        let sui_mint_amount = self.lst_amount_to_sui_amount(amount);
+        let sui_mint_amount = self.lst_amount_to_sui_amount_round_up(amount);
 
         let flash_stake_fee_amount = self.fee_config.get().calculate_flash_stake_fee(sui_mint_amount);
 
@@ -417,7 +419,7 @@ module liquid_staking::liquid_staking {
         fee_config: FeeConfig,
     ) {
         self.version.assert_version_and_upgrade(CURRENT_VERSION);
-
+        fee_config.emit_fee_change_event<P>();
         let old_fee_config = self.fee_config.set(fee_config);
         old_fee_config.destroy();
     }
@@ -432,20 +434,6 @@ module liquid_staking::liquid_staking {
         };
         self.collection_fee_cap_id = object::id(&collect_fee_cap);
         collect_fee_cap
-    }
-
-    public fun pause<P> (
-        self: &mut LiquidStakingInfo<P>,
-        _admin_cap: &AdminCap<P>,
-    ) {
-        self.pause_no_entry<P>();
-    }
-
-    public fun un_pause<P> (
-        self: &mut LiquidStakingInfo<P>,
-        _admin_cap: &AdminCap<P>,
-    ) {
-        self.un_pause_no_entry<P>();
     }
 
     public fun is_paused<P>(
@@ -542,6 +530,21 @@ module liquid_staking::liquid_staking {
         sui_amount as u64
     }
 
+    fun lst_amount_to_sui_amount_round_up<P>(
+        self: &LiquidStakingInfo<P>, 
+        lst_amount: u64
+    ): u64 {
+        let total_sui_supply = self.total_sui_supply();
+        let total_lst_supply = self.total_lst_supply();
+
+        assert!(total_lst_supply > 0, EZeroLstSupply);
+
+        let sui_amount = (((total_sui_supply as u128)
+            * (lst_amount as u128))+ (total_lst_supply as u128) - 1) 
+            / (total_lst_supply as u128);
+
+        sui_amount as u64
+    }
     fun pause_no_entry<P>(
         self: &mut LiquidStakingInfo<P>,
     ) {
