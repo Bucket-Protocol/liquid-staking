@@ -185,6 +185,8 @@ module liquid_staking::liquid_staking {
             liquid_staking_info_id: uid.to_inner()
         });
 
+        fee_config.emit_fee_change_event<P>();
+
         let collect_fee_cap = CollectionFeeCap<P> {
                 id: object::new(ctx)
         };
@@ -417,7 +419,7 @@ module liquid_staking::liquid_staking {
         fee_config: FeeConfig,
     ) {
         self.version.assert_version_and_upgrade(CURRENT_VERSION);
-
+        fee_config.emit_fee_change_event<P>();
         let old_fee_config = self.fee_config.set(fee_config);
         old_fee_config.destroy();
     }
