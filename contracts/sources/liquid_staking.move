@@ -434,20 +434,6 @@ module liquid_staking::liquid_staking {
         collect_fee_cap
     }
 
-    public fun pause<P> (
-        self: &mut LiquidStakingInfo<P>,
-        _admin_cap: &AdminCap<P>,
-    ) {
-        self.pause_no_entry<P>();
-    }
-
-    public fun un_pause<P> (
-        self: &mut LiquidStakingInfo<P>,
-        _admin_cap: &AdminCap<P>,
-    ) {
-        self.un_pause_no_entry<P>();
-    }
-
     public fun is_paused<P>(
         self: &mut LiquidStakingInfo<P>,
     ): bool {
