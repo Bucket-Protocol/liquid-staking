@@ -5,7 +5,8 @@ module liquid_staking::fees {
     const EInvalidFeeConfig: u64 = 0;
 
     // Constants
-    const MAX_BPS: u64 = 10_000;
+    const MAX_BPS: u64 = 1_000;
+     const MAX_REDISTRIBUTE_BPS: u64 = 10_000;
     const MAX_REDEEM_FEE_BPS: u64 = 500; // 5%
 
     public struct FeeConfig has store {
@@ -167,7 +168,7 @@ module liquid_staking::fees {
         assert!(fees.staked_sui_redeem_fee_bps <= MAX_BPS, EInvalidFeeConfig);
         assert!(fees.spread_fee_bps <= MAX_BPS, EInvalidFeeConfig);
         assert!(fees.flash_stake_fee_bps <= MAX_BPS, EInvalidFeeConfig);
-        assert!(fees.redeem_fee_distribution_component_bps <= MAX_BPS, EInvalidFeeConfig);
+        assert!(fees.redeem_fee_distribution_component_bps <= MAX_REDISTRIBUTE_BPS, EInvalidFeeConfig);
         assert!(fees.custom_redeem_fee_bps <= MAX_BPS, EInvalidFeeConfig);
     }
 
@@ -213,14 +214,14 @@ module liquid_staking::fees {
     public fun test_validate_fees_happy() {
         let mut scenario = test_scenario::begin(@0x0);
         let fees = FeeConfig {
-            sui_mint_fee_bps: 10_000,
-            staked_sui_mint_fee_bps: 10_000,
+            sui_mint_fee_bps: 1_000,
+            staked_sui_mint_fee_bps: 1_000,
             redeem_fee_bps: 500,
-            staked_sui_redeem_fee_bps: 10_000,
-            spread_fee_bps: 10_000,
-            flash_stake_fee_bps:10_000,
+            staked_sui_redeem_fee_bps: 1_000,
+            spread_fee_bps: 1_000,
+            flash_stake_fee_bps:1_000,
             redeem_fee_distribution_component_bps: 10_000,
-            custom_redeem_fee_bps: 10_000,
+            custom_redeem_fee_bps: 1_000,
             extra_fields: bag::new(scenario.ctx())
         };
 
@@ -257,13 +258,13 @@ module liquid_staking::fees {
         let mut scenario = test_scenario::begin(@0x0);
         let fees = FeeConfig {
             sui_mint_fee_bps: 100,
-            staked_sui_mint_fee_bps: 10_000,
-            redeem_fee_bps: 10_000,
-            staked_sui_redeem_fee_bps: 10_000,
-            spread_fee_bps: 10_000,
-            custom_redeem_fee_bps: 10_000,
-            flash_stake_fee_bps:10_000,
-            redeem_fee_distribution_component_bps: 10_000,
+            staked_sui_mint_fee_bps: 1_000,
+            redeem_fee_bps: 1_000,
+            staked_sui_redeem_fee_bps: 1_000,
+            spread_fee_bps: 1_000,
+            custom_redeem_fee_bps: 1_000,
+            flash_stake_fee_bps:1_000,
+            redeem_fee_distribution_component_bps: 1_000,
             extra_fields: bag::new(scenario.ctx())
         };
 
@@ -281,13 +282,13 @@ module liquid_staking::fees {
         let mut scenario = test_scenario::begin(@0x0);
         let fees = FeeConfig {
             sui_mint_fee_bps: 0,
-            staked_sui_mint_fee_bps: 10_000,
+            staked_sui_mint_fee_bps: 1_000,
             redeem_fee_bps: 100,
-            staked_sui_redeem_fee_bps: 10_000,
-            spread_fee_bps: 10_000,
-            flash_stake_fee_bps: 10_000,
+            staked_sui_redeem_fee_bps: 1_000,
+            spread_fee_bps: 1_000,
+            flash_stake_fee_bps: 1_000,
             redeem_fee_distribution_component_bps: 10_000,
-            custom_redeem_fee_bps: 10_000,
+            custom_redeem_fee_bps: 1_000,
             extra_fields: bag::new(scenario.ctx())
         };
 
