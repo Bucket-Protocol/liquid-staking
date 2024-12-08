@@ -513,21 +513,6 @@ module liquid_staking::storage {
         };
     }
 
-    public(package) fun join_fungible_stake(
-        self: &mut Storage, 
-        system_state: &mut SuiSystemState,
-        fungible_staked_sui: FungibleStakedSui,
-        ctx: &mut TxContext
-    ) {
-        let validator_index = self.get_or_add_validator_index_by_staking_pool_id_mut(
-            system_state, 
-            fungible_staked_sui.pool_id(), 
-            ctx
-        );
-
-        self.join_fungible_staked_sui_to_validator(validator_index, fungible_staked_sui);
-    }
-
     fun join_inactive_stake_to_validator(
         self: &mut Storage, 
         validator_index: u64,
