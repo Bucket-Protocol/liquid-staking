@@ -1,6 +1,7 @@
 [package]
 name = "stsui"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+published-at = "0xd1b72982e40348d069bb1ff701e634c117bb5f741f44dff91e472d3b01461e55"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 

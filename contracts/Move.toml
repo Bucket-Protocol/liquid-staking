@@ -1,14 +1,13 @@
 [package]
 name = "liquid_staking"
-published-at = "0xac608850e8d93d379de3d87f98da6c07be907d163fbe33383a829aab47633dae"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+published-at = "0xc35ee7fee75782806890cf8ed8536b52b4ba0ace0fb46b944f1155cc5945baa3"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet" }
 SuiSystem = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-system", rev = "mainnet" }
-#liquid-staking = { git = "https://github.com/solendprotocol/liquid-staking", subdir = "contracts", rev = "main" }
 
 
 # For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
