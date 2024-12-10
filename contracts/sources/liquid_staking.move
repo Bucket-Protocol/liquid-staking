@@ -71,7 +71,6 @@ module liquid_staking::liquid_staking {
         sui_amount_in: u64,
         lst_amount_out: u64,
         fee_amount: u64,
-        sender: address
     }
 
     public struct FlashStakeEvent has copy, drop {
@@ -79,7 +78,6 @@ module liquid_staking::liquid_staking {
         sui_amount_in: u64,
         lst_amount_out: u64,
         fee_amount: u64,
-        sender: address
     }
 
     public struct RedeemEvent has copy, drop {
@@ -88,7 +86,6 @@ module liquid_staking::liquid_staking {
         sui_amount_out: u64,
         fee_amount: u64,
         fee_distributed: u64,
-        sender: address
     }
 
     
@@ -288,7 +285,6 @@ module liquid_staking::liquid_staking {
             sui_amount_in: stake_balance_value,
             lst_amount_out: lst_amount,
             fee_amount: fee,
-            sender: ctx.sender()
         });
 
         self.un_pause_no_entry();
@@ -326,7 +322,6 @@ module liquid_staking::liquid_staking {
             sui_amount_in,
             lst_amount_out: lst_mint_amount,
             fee_amount: mint_fee_amount,
-            sender: ctx.sender()
         });
 
         let lst = self.lst_treasury_cap.mint(lst_mint_amount, ctx);
@@ -383,7 +378,6 @@ module liquid_staking::liquid_staking {
             sui_amount_out: sui.value(),
             fee_amount: redeem_fee_amount,
             fee_distributed: distribution_fee,
-            sender: ctx.sender()
         });
 
         // invariant: sui_out / lst_in <= old_sui_supply / old_lst_supply
