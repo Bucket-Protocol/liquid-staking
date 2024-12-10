@@ -70,14 +70,16 @@ module liquid_staking::liquid_staking {
         typename: TypeName,
         sui_amount_in: u64,
         lst_amount_out: u64,
-        fee_amount: u64
+        fee_amount: u64,
+        sender: address
     }
 
     public struct FlashStakeEvent has copy, drop {
         typename: TypeName,
         sui_amount_in: u64,
         lst_amount_out: u64,
-        fee_amount: u64
+        fee_amount: u64,
+        sender: address
     }
 
     public struct RedeemEvent has copy, drop {
@@ -85,7 +87,8 @@ module liquid_staking::liquid_staking {
         lst_amount_in: u64,
         sui_amount_out: u64,
         fee_amount: u64,
-        fee_distributed: u64
+        fee_distributed: u64,
+        sender: address
     }
 
     
@@ -127,7 +130,11 @@ module liquid_staking::liquid_staking {
     // returns total sui managed by the LST. Note that this value might be out of date if the 
     // LiquidStakingInfo object is out of date.
     public fun total_sui_supply<P>(self: &LiquidStakingInfo<P>): u64 {
-        self.storage.total_sui_supply() - self.accrued_spread_fees
+        if(self.storage.total_sui_supply() > self.accrued_spread_fees) {
+            self.storage.total_sui_supply() - self.accrued_spread_fees
+        } else {
+            0
+        }
     }
 
     public fun total_lst_supply<P>(self: &LiquidStakingInfo<P>): u64 {
@@ -280,7 +287,8 @@ module liquid_staking::liquid_staking {
             typename: type_name::get<P>(),
             sui_amount_in: stake_balance_value,
             lst_amount_out: lst_amount,
-            fee_amount: fee
+            fee_amount: fee,
+            sender: ctx.sender()
         });
 
         self.un_pause_no_entry();
@@ -317,7 +325,8 @@ module liquid_staking::liquid_staking {
             typename: type_name::get<P>(),
             sui_amount_in,
             lst_amount_out: lst_mint_amount,
-            fee_amount: mint_fee_amount
+            fee_amount: mint_fee_amount,
+            sender: ctx.sender()
         });
 
         let lst = self.lst_treasury_cap.mint(lst_mint_amount, ctx);
@@ -373,7 +382,8 @@ module liquid_staking::liquid_staking {
             lst_amount_in: lst.value(),
             sui_amount_out: sui.value(),
             fee_amount: redeem_fee_amount,
-            fee_distributed: distribution_fee
+            fee_distributed: distribution_fee,
+            sender: ctx.sender()
         });
 
         // invariant: sui_out / lst_in <= old_sui_supply / old_lst_supply

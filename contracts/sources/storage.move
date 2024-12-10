@@ -254,6 +254,9 @@ module liquid_staking::storage {
         ctx: &mut TxContext
     ): bool {
         let mut i = self.validator_infos.length();
+        if(self.total_weight == 0) {
+            return false
+        };
         let sui_per_weight = self.sui_pool.value() / self.total_weight;
         while (i > 0) {
             i = i - 1;
