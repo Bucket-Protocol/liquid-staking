@@ -150,6 +150,29 @@ module liquid_staking::liquid_staking {
         self.fee_config.get()
     }
 
+    public fun lst_to_sui_redemption_price<P>(
+        self: &LiquidStakingInfo<P>, 
+        lst_amount: u64
+    ): u64 {
+        let sui_amount = self.lst_amount_to_sui_amount(lst_amount);
+
+        let redeem_fee = self.fee_config.get().calculate_redeem_fee(sui_amount);
+        
+        sui_amount - redeem_fee
+
+    }
+
+    public fun sui_to_lst_mint_price<P>(
+        self: &LiquidStakingInfo<P>, 
+        sui_amount: u64
+    ): u64 {
+        let mint_fee = self.fee_config.get().calculate_mint_fee(sui_amount);
+
+        let lst_amount = self.sui_amount_to_lst_amount(sui_amount-mint_fee);
+        
+        lst_amount
+    }
+
     #[test_only]
     public fun accrued_spread_fees<P>(self: &LiquidStakingInfo<P>): u64 {
         self.accrued_spread_fees
@@ -629,6 +652,16 @@ module liquid_staking::liquid_staking {
             test_scenario::return_shared(lst_info);
             test_scenario::return_shared(state);
             tc.return_to_sender(admin_cap);
+        };
+        tc.next_tx(user);
+        {
+            let mut lst_info = tc.take_shared<LiquidStakingInfo<ALPHA>>();
+            assert!(lst_info.lst_to_sui_redemption_price(1_000_000) == 999000);
+            assert!(lst_info.lst_to_sui_redemption_price(1_000_000_123) == 999000122);
+            assert!(lst_info.sui_to_lst_mint_price(1_000_000_000) == 999000000);
+            assert!(lst_info.sui_to_lst_mint_price(1_000_000_123) == 999000122);
+            test_scenario::return_shared(lst_info);
+            
         };
 
         tc.end();
