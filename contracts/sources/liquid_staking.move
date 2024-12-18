@@ -27,7 +27,7 @@ module liquid_staking::liquid_staking {
     const ESystemNotPaused: u64 = 7;
 
     /* Constants */
-    const CURRENT_VERSION: u16 = 1;
+    const CURRENT_VERSION: u16 = 2;
     
 
     public struct LIQUID_STAKING has drop {}
