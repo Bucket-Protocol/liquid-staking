@@ -27,8 +27,6 @@ stSUI supports flash staking, enabling low gas costs for DeFi strategies, making
 Introduces an additional Fee Collection Cap to limit admin cap usage, enhancing security.
 If the Fee Collection Cap is compromised, it can be regenerated using the admin cap—ensuring long-term safety for future projects built on the stSUI framework.
 
-Please reach out to 0xrajendra on X for any collaboration.
-
 ----------
  
 **We extend our gratitude to SpringSui** for open-sourcing the code and introducing SIP-31 and SIP-33, which enabled instant unstaking and fungible LSTs—paving the way for further innovations like stSUI.
